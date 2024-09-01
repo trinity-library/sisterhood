@@ -1,0 +1,19 @@
+# Android files
+local.properties
+
+# Gradle files
+.gradle
+build
+
+# Idea files
+.idea
+!.idea/runConfigurations
+
+# Java files
+*.hprof
+
+# Kotlin files
+.kotlin
+
+# Project files
+*.db
