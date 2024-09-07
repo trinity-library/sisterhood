@@ -30,19 +30,24 @@ class KtorHitomiClient(
             }
     }
 
-    override suspend fun fetchIds(language: Language, offset: Int, limit: Int): Result<List<Int>> = runCatching {
-        httpClient
-            .get("https://ltn.hitomi.la/index-${language.name.lowercase()}.nozomi") {
-                headers { append(HttpHeaders.Range, "bytes=${offset * 4}-${offset * 4 + limit * 4 - 1}") }
-            }
-            .let { response ->
-                response.bodyAsChannel().let { channel ->
-                    mutableListOf<Int>().apply {
-                        while (!channel.isClosedForRead) add(channel.readInt())
-                    }
+    private suspend fun fetchIds(urlString: String, offset: Int, limit: Int): Result<List<Int>> = runCatching {
+        httpClient.get(urlString) {
+            headers { append(HttpHeaders.Range, "bytes=${offset * 4}-${offset * 4 + limit * 4 - 1}") }
+        }.let { response ->
+            response.bodyAsChannel().let { channel ->
+                mutableListOf<Int>().apply {
+                    while (!channel.isClosedForRead) add(channel.readInt())
                 }
             }
+        }
     }
+
+    override suspend fun fetchIds(offset: Int, limit: Int): Result<List<Int>> =
+        fetchIds("https://ltn.hitomi.la/index-all.nozomi", offset, limit)
+
+    override suspend fun fetchIds(language: Language, offset: Int, limit: Int): Result<List<Int>> =
+        fetchIds("https://ltn.hitomi.la/index-${language.name.lowercase()}.nozomi", offset, limit)
+
 
     private fun createPageUrl(hash: String, ext: String): String {
         val aOrB = Char(97 + gg.m(gg.s(hash)))

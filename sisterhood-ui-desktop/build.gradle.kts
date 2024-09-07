@@ -23,7 +23,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "sisterhood.ui.MainKt"
+        mainClass = "MainKt"
         nativeDistributions {
             packageName = "Sisterhood"
             packageVersion = "0.1.0"

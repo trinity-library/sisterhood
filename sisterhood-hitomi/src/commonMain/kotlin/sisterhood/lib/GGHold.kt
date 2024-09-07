@@ -3,6 +3,7 @@ package sisterhood.lib
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import sisterhood.lib.hitomi.GG
@@ -14,7 +15,9 @@ class GGHold(
     private val httpClient: HttpClient,
     private val lifetime: Duration
 ) {
-    private var gg: GG? = null
+    val gg: GG
+        get() = if (alive()) store else fetchGG()
+    private lateinit var store: GG
     private var lastFetchedAt: Instant = Instant.DISTANT_PAST
 
     constructor(httpClient: HttpClient) : this(
@@ -25,17 +28,18 @@ class GGHold(
     private fun alive(): Boolean =
         Clock.System.now() - lastFetchedAt < lifetime
 
-    private suspend fun fetchGG(): GG =
+    private fun fetchGG(): GG = runBlocking {
         httpClient
             .get("https://ltn.hitomi.la/gg.js")
             .bodyAsText()
             .let { ggjs -> GGImpl(ggJs = ggjs) }
             .also {
-                gg = it
+                store = it
                 lastFetchedAt = Clock.System.now()
             }
+    }
 
-    suspend fun fetch(): Result<GG> = runCatching {
-        takeIf { alive() }?.gg ?: fetchGG()
+    fun fetch(): Result<GG> = runCatching {
+        takeIf { alive() }?.store ?: fetchGG()
     }
 }

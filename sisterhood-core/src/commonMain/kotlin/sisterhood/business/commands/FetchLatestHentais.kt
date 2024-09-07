@@ -6,10 +6,8 @@ import kotlinx.coroutines.flow.onCompletion
 import sisterhood.domain.Aggregate
 import sisterhood.domain.Event
 import sisterhood.domain.create
-import sisterhood.domain.hentai.valueobjects.HentaiLanguage
 
 data class FetchLatestHentais(
-    val language: HentaiLanguage,
     val n: Int,
     val skip: Int,
 ) : Command() {

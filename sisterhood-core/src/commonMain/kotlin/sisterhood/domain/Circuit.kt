@@ -2,8 +2,8 @@ package sisterhood.domain
 
 import kotlinx.coroutines.flow.Flow
 import sisterhood.domain.hentai.HentaiFactory
-import sisterhood.domain.hentai.HentaiInfoService
 import sisterhood.domain.hentai.HentaiRepository
+import sisterhood.domain.hentaiinfo.HentaiInfoService
 
 typealias Circuit = (Event<out Aggregate>) -> Flow<Event<out Aggregate>>
 

@@ -1,29 +1,30 @@
 package sisterhood.domain.hentai
 
 import sisterhood.domain.Aggregate
-import sisterhood.domain.hentai.entities.HentaiInfo
-import sisterhood.domain.hentai.entities.HitomiInfo
-import sisterhood.domain.hentai.events.HentaiInfoUpdated
+import sisterhood.domain.Timestamp
+import sisterhood.domain.hentai.events.HentaiPrepared
+import sisterhood.domain.hentaiinfo.HentaiInfo
+import sisterhood.domain.valueobjects.HentaiId
 
 data class Hentai(
     override val id: HentaiId,
-    override val status: HentaiStatus,
-    private val hitomiInfo: HitomiInfo?
+    override val updatedAt: Timestamp,
+    override val status: HentaiStatus
 ) : Aggregate() {
     constructor(id: HentaiId) : this(
         id = id,
-        status = HentaiStatus.Empty,
-        hitomiInfo = null
+        updatedAt = Timestamp(),
+        status = HentaiStatus.Empty
     )
 
-    fun updateInfo(info: HentaiInfo): HentaiInfoUpdated? =
-        when (info) {
-            is HitomiInfo -> takeIf { hitomiInfo == null || hitomiInfo.updatedAt <= info.updatedAt }
-                ?.run {
-                    HentaiInfoUpdated(
-                        aggregate = copy(status = HentaiStatus.Prepared),
-                        hentaiInfo = info
-                    )
-                }
+    private fun canPrepare(hentaiInfo: HentaiInfo): Boolean =
+        hentaiInfo.isPrepared()
+
+    fun prepare(hentaiInfo: HentaiInfo): HentaiPrepared? =
+        takeIf { canPrepare(hentaiInfo) }?.let {
+            HentaiPrepared(
+                aggregate = copy(status = HentaiStatus.Prepared, updatedAt = Timestamp()),
+                hentaiInfo = hentaiInfo,
+            )
         }
 }

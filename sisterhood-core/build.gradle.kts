@@ -26,8 +26,8 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(project(":sisterhood-hitomi"))
-            implementation(libs.koin.core)
+            api(project(":sisterhood-hitomi"))
+            api(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.cio)
@@ -38,6 +38,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core.jvm)
             implementation(libs.kotlinx.io.core.jvm)
             implementation(libs.slf4j.simple)
             implementation(libs.sqldelight.sqlite.driver)

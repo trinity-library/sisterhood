@@ -1,7 +1,6 @@
 package sisterhood.domain
 
 abstract class Aggregate : Entity() {
-    abstract override val id: Id
     abstract val status: Status
 
     override fun equals(other: Any?): Boolean = when (other) {

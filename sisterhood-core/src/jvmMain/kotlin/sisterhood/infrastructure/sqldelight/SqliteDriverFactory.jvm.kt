@@ -6,6 +6,8 @@ import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 
 actual class SqliteDriverFactory(private val path: Path) {
+    constructor(path: String) : this(path = Path(path = path))
+
     private val driver: SqlDriver by lazy {
         JdbcSqliteDriver("jdbc:sqlite:${path.name}")
     }

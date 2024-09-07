@@ -11,6 +11,8 @@ actual class SqliteDriverFactory(
     context: Context,
     private val path: Path
 ) {
+    constructor(context: Context, path: String) : this(context = context, path = Path(path = path))
+
     private val driver: SqlDriver by lazy {
         AndroidSqliteDriver(
             schema = Sqlite.Schema.synchronous(),

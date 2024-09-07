@@ -25,10 +25,16 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
             api(compose.runtime)
+            implementation(project(":sisterhood-core"))
+            implementation(compose.preview)
+            implementation(libs.coil.compose)
         }
 
         commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
 
+        jvmMain.dependencies {
         }
     }
 
