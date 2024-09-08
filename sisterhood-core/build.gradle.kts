@@ -31,6 +31,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.cio)
+            implementation(libs.sqldelight.coroutines.extensions)
         }
 
         commonTest.dependencies {

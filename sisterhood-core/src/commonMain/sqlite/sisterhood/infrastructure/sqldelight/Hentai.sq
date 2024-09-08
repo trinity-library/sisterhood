@@ -1,3 +1,17 @@
-CREATE TABLE hitomi_info (
-  foo INTEGER PRIMARY KEY NOT NULL
+import sisterhood.domain.hentai.HentaiStatus;
+
+CREATE TABLE IF NOT EXISTS hentai (
+  id INTEGER PRIMARY KEY NOT NULL,
+  status TEXT AS HentaiStatus NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
 );
+
+selectHentaisById:
+SELECT * FROM hentai WHERE id IN ?;
+
+insertHentai:
+INSERT OR IGNORE INTO hentai VALUES ?;
+
+replaceHentai:
+REPLACE INTO hentai VALUES ?;

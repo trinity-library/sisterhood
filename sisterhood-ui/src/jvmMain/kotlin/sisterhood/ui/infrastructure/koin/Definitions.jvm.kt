@@ -10,5 +10,5 @@ actual val definePrintFactory: Definition<PrintFactory> = {
 }
 
 actual val defineSqliteDriverFactory: Definition<SqliteDriverFactory> = {
-    SqliteDriverFactory(path = ".tmp")
+    SqliteDriverFactory(path = ".tmp.db")
 }

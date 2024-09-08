@@ -1,9 +1,9 @@
 package sisterhood.infrastructure
 
 import kotlinx.coroutines.flow.Flow
-import sisterhood.lib.hitomi.Gallery
+import sisterhood.domain.Id
 
-interface Cache {
-    suspend fun read(vararg id: Int): Flow<Gallery>
-    suspend fun write(vararg gallery: Gallery)
+interface Cache<T> {
+    suspend fun read(vararg id: Id): Flow<T>
+    suspend fun write(vararg gallery: T)
 }

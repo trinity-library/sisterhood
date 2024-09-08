@@ -8,16 +8,17 @@ import sisterhood.domain.Event
 import sisterhood.domain.EventProp
 import sisterhood.domain.create
 import sisterhood.domain.hentai.Hentai
-import sisterhood.domain.hentaiinfo.HentaiInfo
 
-data class HentaiPrepared(
-    override val aggregate: Hentai,
-    val hentaiInfo: HentaiInfo
+data class HentaiInitializationStarted(
+    override val aggregate: Hentai
 ) : HentaiEvent(aggregate = aggregate) {
     override fun EventProp.apply(): Flow<Event<out Aggregate>> = flow<Event<out Aggregate>> {
+        hentaiService.fetchMetadata(aggregate.id)
     }.onStart {
-        val print = printFactory.create(this@HentaiPrepared)
-        hentaiRepository.update(aggregate)
-        print.info("Hentai(${aggregate.id}) updated.")
+        val print = printFactory.create(this@HentaiInitializationStarted)
+        print.info("Hentai (#${aggregate.id}) started to be initialized")
+
+        hentaiRepository.save(aggregate)
+        print.debug("Hentai (#${aggregate.id}) was saved successfully")
     }
 }

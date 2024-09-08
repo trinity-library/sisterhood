@@ -7,6 +7,4 @@ import sisterhood.domain.valueobjects.HentaiId
 sealed class HentaiEvent(
     override val id: HentaiId = HentaiId(id = 1),
     override val aggregate: Hentai
-) : Event<Hentai>(aggregate = aggregate) {
-
-}
+) : Event<Hentai>(aggregate = aggregate)

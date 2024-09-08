@@ -9,7 +9,7 @@ import sisterhood.domain.Circuit
 import sisterhood.domain.PrintFactory
 import sisterhood.domain.hentai.HentaiFactory
 import sisterhood.domain.hentai.HentaiRepository
-import sisterhood.domain.hentaiinfo.HentaiInfoService
+import sisterhood.domain.hentai.HentaiService
 import sisterhood.infrastructure.ConcreteHentaiFactory
 import sisterhood.infrastructure.hitomi.HitomiInfoService
 import sisterhood.infrastructure.sqldelight.SqliteDriverFactory
@@ -27,23 +27,33 @@ val commonModule = module {
             httpClient = HttpClient()
         )
     }
-    factory<SqliteDriverFactory> { defineSqliteDriverFactory(it) }
-    factory<HentaiInfoService> {
-        HitomiInfoService(hitomiClient = get())
-    }
     factory<HentaiFactory> { ConcreteHentaiFactory() }
-    factory<HentaiRepository> { SqliteHentaiRepository(driver = get<SqliteDriverFactory>().create()) }
+    factory<SqliteDriverFactory> { defineSqliteDriverFactory(it) }
+    factory<HentaiRepository> {
+        SqliteHentaiRepository(
+            driver = get<SqliteDriverFactory>().create(),
+            printFactory = get()
+        )
+    }
+    factory<HentaiService> { HitomiInfoService(hitomiClient = get()) }
     factory<PrintFactory> { definePrintFactory(it) }
 
     factory<Circuit>(named("circuit")) {
         Circuit(
             hentaiFactory = get(),
-            hentaiInfoService = get(),
             hentaiRepository = get(),
+            hentaiService = get(),
             printFactory = get()
         )
     }
-    factory<Sink>(named("sink")) { Sink(printFactory = get()) }
+    factory<Sink>(named("sink")) {
+        Sink(
+            hentaiFactory = get(),
+            hentaiRepository = get(),
+            hentaiService = get(),
+            printFactory = get()
+        )
+    }
     factory<Mediate>(named("mediate")) {
         Mediate(
             circuit = get(named("circuit")),

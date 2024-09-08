@@ -1,34 +1,43 @@
 package sisterhood.infrastructure.hitomi
 
-import sisterhood.domain.HentaiInfoFetchFailed
+import sisterhood.domain.HentaiMetadataFetchFailed
 import sisterhood.domain.Name
-import sisterhood.domain.hentaiinfo.HentaiInfoService
-import sisterhood.domain.hentaiinfo.entities.HentaiMetadata
-import sisterhood.domain.hentaiinfo.entities.HitomiMetadata
+import sisterhood.domain.hentai.HentaiService
+import sisterhood.domain.hentai.entities.HentaiMetadata
+import sisterhood.domain.hentai.entities.HitomiMetadata
 import sisterhood.domain.valueobjects.HentaiId
 import sisterhood.domain.valueobjects.HentaiLanguage
 import sisterhood.lib.HitomiClient
 import sisterhood.lib.hitomi.Gallery
 import sisterhood.lib.hitomi.Language
 
-class HitomiInfoService(private val hitomiClient: HitomiClient) : HentaiInfoService {
+class HitomiInfoService(private val hitomiClient: HitomiClient) : HentaiService {
+    private fun Result<List<HentaiId>>.throwHentaiInfoFetchFailed(n: Int, skip: Int): Result<List<HentaiId>> =
+        onFailure {
+            return Result.failure(
+                HentaiMetadataFetchFailed(
+                    cause = it,
+                    message = "Failed to fetch latest $n ids(skipping $skip) from hitomi"
+                )
+            )
+        }
+
+    override suspend fun fetchLatestIds(n: Int, skip: Int): Result<List<HentaiId>> =
+        hitomiClient
+            .fetchIds(skip, n)
+            .map { ids -> ids.map { id -> HentaiId(id = id) } }
+            .throwHentaiInfoFetchFailed(n, skip)
+
     override suspend fun fetchLatestIds(language: HentaiLanguage, n: Int, skip: Int): Result<List<HentaiId>> =
         hitomiClient
             .fetchIds(language.toHitomiLanguage(), skip, n)
             .map { ids -> ids.map { id -> HentaiId(id = id) } }
-            .onFailure {
-                return Result.failure(
-                    HentaiInfoFetchFailed(
-                        cause = it,
-                        message = "Failed to fetch latest $n ids(skipping $skip) from hitomi"
-                    )
-                )
-            }
+            .throwHentaiInfoFetchFailed(n, skip)
 
-    override suspend fun fetchMetadata(id: HentaiId): Result<HentaiMetadata?> =
+    override suspend fun fetchMetadata(id: HentaiId): Result<HentaiMetadata> =
         hitomiClient
             .fetchGallery(id.toInt())
-            .map { it?.toHitomiMetadata() }
+            .map { it.toHitomiMetadata() }
 }
 
 private fun Gallery.toHitomiMetadata(): HitomiMetadata =

@@ -13,7 +13,8 @@ kotlin {
             implementation(project(":sisterhood-core"))
             implementation(project(":sisterhood-ui"))
             implementation(compose.desktop.currentOs)
-            implementation(libs.ktor.client.cio)
+            runtimeOnly(libs.ktor.client.cio)
+            runtimeOnly(libs.sqlite.jdbc)
         }
 
         jvmTest.dependencies {

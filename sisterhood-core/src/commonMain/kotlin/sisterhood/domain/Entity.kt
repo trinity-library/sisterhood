@@ -1,7 +1,8 @@
 package sisterhood.domain
 
-abstract class Entity(val createdAt: Timestamp = Timestamp()) {
+abstract class Entity {
     abstract val id: Id
+    abstract val createdAt: Timestamp
     abstract val updatedAt: Timestamp
 
     override fun equals(other: Any?): Boolean = when (other) {

@@ -5,7 +5,7 @@ abstract class SisterhoodException : RuntimeException() {
     abstract override val message: String?
 }
 
-class HentaiInfoFetchFailed(
+class HentaiMetadataFetchFailed(
     override val cause: Throwable,
     override val message: String
 ) : SisterhoodException()

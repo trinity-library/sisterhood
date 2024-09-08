@@ -1,4 +1,4 @@
-package sisterhood.domain.hentaiinfo.entities
+package sisterhood.domain.hentai.entities
 
 import sisterhood.domain.Entity
 import sisterhood.domain.Name

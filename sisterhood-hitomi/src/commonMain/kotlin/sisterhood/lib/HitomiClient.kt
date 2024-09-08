@@ -6,7 +6,7 @@ import sisterhood.lib.hitomi.Language
 import sisterhood.lib.hitomi.ThumbnailSize
 
 interface HitomiClient {
-    suspend fun fetchGallery(id: Int): Result<Gallery?>
+    suspend fun fetchGallery(id: Int): Result<Gallery>
     suspend fun fetchIds(offset: Int, limit: Int): Result<List<Int>>
     suspend fun fetchIds(language: Language, offset: Int, limit: Int): Result<List<Int>>
     suspend fun fetchPage(gallery: Gallery, pageNumber: Int, ext: FileExtension): Result<ByteArray>

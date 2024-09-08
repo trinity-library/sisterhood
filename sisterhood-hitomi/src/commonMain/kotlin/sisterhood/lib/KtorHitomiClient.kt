@@ -19,7 +19,7 @@ class KtorHitomiClient(
         ignoreUnknownKeys = true
     }
 
-    override suspend fun fetchGallery(id: Int): Result<Gallery?> = runCatching {
+    override suspend fun fetchGallery(id: Int): Result<Gallery> = runCatching {
         httpClient
             .get("https://ltn.hitomi.la/galleries/$id.js")
             .let { response ->
@@ -27,6 +27,7 @@ class KtorHitomiClient(
                     .bodyAsText()
                     .takeIf { it.startsWith(GALLERY_PREFIX) }
                     ?.let { json.decodeFromString(it.removePrefix(GALLERY_PREFIX)) }
+                    ?: throw Exception()  // TODO: unexpected format
             }
     }
 
